@@ -1,8 +1,8 @@
 def printMenu():
     print ('1. Citire date')
     print ('2. Determinare cea mai lungă subsecvență in care toate numerele sunt pare')
-    print ('3. Determinare cea mai lungă subsecvență in care media numerelor nu depășește o valoare citită')
-    print ('4. Determinare cea mai lungă subsecvență in care toate numerele sunt divizibile cu un numar')
+    print ('3. Determinare cea mai lungă subsecvență in care concatenarea numerelor este un numar prim')
+    print ('4. Determinare cea mai lungă subsecvență de numere cu acelasi numar de biti de unu')
     print ('5. Iesire')
 
 def citireLista ():
@@ -70,12 +70,59 @@ def nume(lst: list[int]) -> int:
         string = int(str(string) + str(i))
     return string
 
+def nr_biti_unu (n):
+    '''
+    Transforma numarul din baza 10 in baza 2 si retine numarul aparitiilor lui 1 intr-un contor
+    '''
+    contor=0
+    m=int(n)
+    while m > 0:
+        if m % 2 == 1:
+            contor += 1
+        m = m // 2
+    return contor
+
+def test_nr_biti ():
+    assert nr_biti_unu (2) == 1
+    assert nr_biti_unu (17) == 2
+    assert nr_biti_unu (23) == 4
+    assert nr_biti_unu (1000) == 6
+
+def all_same_bit (lst):
+    '''
+    Verifica daca toate elementele unei liste au acelasi numar de biti unu
+    '''
+    test_nr_biti()
+    contor2 = nr_biti_unu(lst[0])
+    for i in lst:
+        if nr_biti_unu(i) != contor2:
+            return False
+    return True
+def get_longest_same_bit_counts (lst):
+    '''
+    :param lst: o lista de numere
+    :return: cea mai lunga subsecventa care indeplineste conditia de la prob 11
+    '''
+    lista_secv = []
+    for start in range (0,len(lst)):
+        for end in range (start + 1, len(lst)):
+            if all_same_bit(lst[start:end]):
+                lista_secv.append(lst[start:end])
+
+    secv_max = []
+    for secventa in lista_secv:
+        if(len(secventa) > len(secv_max)):
+            secv_max = secventa
+    return secv_max
+
+
 def main():
    test_get_longest_all_even()
+   test_nr_biti()
    lst=[]
    while True:
         printMenu()
-        optiune = input('Dati optiunea: ')
+        optiune = input('Alegeti optiunea: ')
         if optiune == "1":
             lst=citireLista()
         elif optiune == "2":
@@ -83,6 +130,8 @@ def main():
         elif optiune == "3":
             print(get_longest_concat_is_prime(lst))
         elif optiune == '4':
+            print(get_longest_same_bit_counts(lst))
+        elif optiune == '5':
             break
         else:
             print("Optiune gresita! Reincercati!")
